@@ -1,0 +1,5 @@
+Django==1.11.7
+django-redis==4.9.0
+Pillow==5.1.0
+pytz==2018.4
+redis==2.10.6
