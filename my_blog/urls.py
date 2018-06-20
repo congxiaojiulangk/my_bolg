@@ -12,7 +12,7 @@ urlpatterns = [
 	url(r'^post/edit/',post_views.edit, name='edit'),
 	url(r'^post/read/',post_views.read, name='read'),
 	url(r'^post/search/',post_views.search, name='search'),
-
+	url(r'^post/top10/', post_views.top10, name="top10"),
 
 	url(r'^user/register/', user_views.register, name="register"),	
 	url(r'^user/login/', user_views.login, name="login"),

@@ -126,7 +126,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/medias/'
 MEDIA_ROOT = 'medias'
-
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 CACHES = {
     "default": {
@@ -137,4 +137,10 @@ CACHES = {
             "PICKLE_VERSION": -1,
         }
     }
+}
+
+REDIS = {
+    'host':'localhost',
+    'port':6379,
+    'db':1,
 }

@@ -3,6 +3,8 @@ from django.core.cache import cache
 from post.models import Post
 from math import ceil
 from post.helper import page_cache
+from post.helper import read_count
+from post.helper import get_top_n
 
 
 def create(request):
@@ -32,8 +34,8 @@ def edit(request):
 		post = Post.objects.get(id=post_id)
 		return render(request,'edit.html',{'post': post})
 
-
-@page_cache(3)
+@read_count
+@page_cache(300)
 def read(request):
 	post_id = int(request.GET.get('post_id'))
 	try:
@@ -52,7 +54,7 @@ def read(request):
 		return redirect('/post/list/')
 
 
-@page_cache(3)
+@page_cache(300)
 def list(request):
 	page = int(request.GET.get('page',1)) # 当前页码，默认为-1
 	p = 5
@@ -72,3 +74,7 @@ def search(request):
 	posts = Post.objects.filter(content__contains=keyword)
 	return render(request,'search.html',{'posts': posts})
 
+
+def top10(request):
+	rank_data = get_top_n(10)
+	return render(request,'top10.html', {'rank_data': rank_data})
