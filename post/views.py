@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.core.cache import cache
 from post.models import Post
 from math import ceil
+from post.helper import page_cache
 
 
 def create(request):
@@ -32,21 +33,26 @@ def edit(request):
 		return render(request,'edit.html',{'post': post})
 
 
+@page_cache(3)
 def read(request):
 	post_id = int(request.GET.get('post_id'))
 	try:
+		# 存入缓存
 		# key = 'post-%d'%post_id
 		# post = cache.get(key)
 		# print('from get cache %d'%post_id)
 		# if post is None:
-		post = Post.objects.get(id=post_id)
+			# post = Post.objects.get(id=post_id)
 			# cache.set(key,post)
 			# print('from get db %d'%post_id)
+
+		post = Post.objects.get(id=post_id)
 		return render(request,'read.html',{'post': post})
 	except Post.DoesNotExist:
 		return redirect('/post/list/')
 
 
+@page_cache(3)
 def list(request):
 	page = int(request.GET.get('page',1)) # 当前页码，默认为-1
 	p = 5
