@@ -1,7 +1,9 @@
+from django.shortcuts import redirect
 from django.core.cache import cache
 from post.models import Post
 from common import rds
 from common import keys
+
 
 def page_cache(times):
 	def wrap1(view_func):
@@ -9,13 +11,12 @@ def page_cache(times):
 			# key的构造: view /vars /user
 			key = keys.PAGE_CACHE_KEY %(request.session.session_key,request.get_full_path())
 			res = cache.get(key)
-			print('获取-------%s'%res)
+			# print('获取-------%s'%res)
 
 			if res is None:  				# 检查缓存中是否有结果
 				res = view_func(request)  	# 如果没有，直接执行原函数
 				cache.set(key,res,times)
-				print('设置--------%s'%res)
-
+				# print('设置--------%s'%res)
 			return res  					# 如果有，直接返回缓存response
 		return wrap2
 	return wrap1
@@ -26,7 +27,7 @@ def read_count(read_view):
 		res = read_view(request)
 		if res.status_code < 300:
 			post_id = request.GET.get('post_id')
-			print(post_id)
+			# print(post_id)
 			rds.zincrby(keys.READ_RANk_KEY, post_id)
 		return res
 	return wrap
@@ -44,3 +45,13 @@ def get_top_n(num):
 	for item, post in zip(rank_data,posts):
 		item[0] = post
 	return rank_data
+
+
+def is_login(post_view):
+	def wrap(request):
+		uid = request.session.get('uid',-1)
+		if uid != -1:
+			return post_view(request)
+		else:
+			return redirect('/user/login/')
+	return wrap
