@@ -23,7 +23,6 @@ class Post(models.Model):
 
 		relations = Relations.objects.filter(post_id=self.id).only('tag_id')
 		tag_id_list = [r.tag_id for r in relations]
-		print(tag_id_list)
 		return Tag.objects.filter(id__in=tag_id_list)
 
 	def update_tags(self,tag_names):
